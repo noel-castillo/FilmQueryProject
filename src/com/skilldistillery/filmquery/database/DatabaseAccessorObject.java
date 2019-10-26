@@ -36,7 +36,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 
 		try (Connection conn = DriverManager.getConnection(URL, user, password);
 				PreparedStatement stmt = setUp(filmId, conn, sql);
-				ResultSet filmResults = stmt.executeQuery();) {
+				ResultSet filmResults = stmt.executeQuery();){
 
 			if (filmResults.next()) {
 				film = new Film();
@@ -52,12 +52,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setReplacementCost(filmResults.getDouble("replacement_cost"));
 				film.setRating(filmResults.getString("rating"));
 				film.setSpecialFeatures(filmResults.getString("special_features"));
-
-//				List<Integer> actorsIDs = new ArrayList<>();
-//				actorsIDs.add(filmResults.getInt("actors.id"));
-//				for (Integer element : actorsIDs) {
-//					film.getActors().add(findActorById(element));
-//				}
+				film.setActors(findActorsByFilmId(film.getId()));
 			}
 
 			filmResults.close();
@@ -97,7 +92,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setReplacementCost(rs.getDouble("replacement_cost"));
 				film.setRating(rs.getString("rating"));
 				film.setSpecialFeatures(rs.getString("special_features"));
-
+				film.setActors(findActorsByFilmId(film.getId()));
 				films.add(film);
 			}
 
@@ -109,6 +104,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		return films;
 	}
 
+	@Override
 	public Actor findActorById(int actorId) {
 		Actor actor = null;
 		String user = "student";
@@ -133,6 +129,37 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		}
 		return actor;
 	}
+	
+	@Override
+	public List<Actor> findActorsByFilmId(int filmId) {
+		List<Actor> actors = new ArrayList<>();
+		Actor actor = null;
+		String user = "student";
+		String password = "student";
+		String sql = "SELECT actor.id, actor.first_name, actor.last_name FROM actor "
+				+ "JOIN film_actor ON actor.id = film_actor.actor_id "
+				+ "JOIN film ON film_actor.film_id = film.id "
+				+ "WHERE film.id = ?";
+		
+		try (Connection conn = DriverManager.getConnection(URL, user, password);
+				PreparedStatement stmt = setUp(filmId, conn, sql);
+				ResultSet actorResult = stmt.executeQuery();) {
+			
+			while (actorResult.next()) {
+				actor = new Actor();
+				actor.setId(actorResult.getInt("id"));
+				actor.setFirstName(actorResult.getString("first_name"));
+				actor.setLastName(actorResult.getString("last_name"));
+				actors.add(actor);
+			}
+			
+		} catch (
+				
+				SQLException e) {
+			System.err.println(e);
+		}
+		return actors;
+	}
 
 	public PreparedStatement setUp(int id, Connection conn, String sql) throws SQLException {
 		PreparedStatement stmt = conn.prepareStatement(sql);
@@ -145,11 +172,6 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		stmt.setString(1, "%" + keyword + "%");
 		stmt.setString(2, "%" + keyword + "%");
 		return stmt;
-	}
-
-	public List<Actor> findActorsByFilmId(int filmId) {
-
-		return null;
 	}
 
 }
