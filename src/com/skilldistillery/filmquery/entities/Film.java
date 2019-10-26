@@ -1,5 +1,7 @@
 package com.skilldistillery.filmquery.entities;
 
+import java.util.List;
+
 public class Film {
 	
 //	F I E L D S 
@@ -9,22 +11,25 @@ public class Film {
 	private String description;
 	private Integer releaseYear;
 	private int languageId;
+	private String language;
 	private int rentalDuration;
 	private double rentalRate;
 	private int length;
 	private double replacementCost;
 	private String rating;
 	private String specialFeatures;
+	private List<Actor> actors;
 	
 //	C O N S T R U C T O R 
 	
-	public Film(int id, String title, Integer releaseYear, int languageId, int length, double replacementCost,
+	public Film(int id, String title, Integer releaseYear, int languageId, String language, int length, double replacementCost,
 			String specialFeatures) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.releaseYear = releaseYear;
 		this.languageId = languageId;
+		this.language = language;
 		this.length = length;
 		this.replacementCost = replacementCost;
 		this.specialFeatures = specialFeatures;
@@ -36,7 +41,7 @@ public class Film {
 //	M E T H O D S 
 	@Override
 	public String toString() {
-		return title + " released " + releaseYear + ", rated " + rating + " : " + description;
+		return title + " (" + language + ") released " + releaseYear + ", rated " + rating + " : " + description;
 	}
 	
 	public int getId() {
@@ -68,6 +73,14 @@ public class Film {
 	}
 	public void setLanguageId(int languageId) {
 		this.languageId = languageId;
+	}
+	
+	
+	public String getLanguage() {
+		return language;
+	}
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 	public int getRentalDuration() {
 		return rentalDuration;
@@ -105,6 +118,13 @@ public class Film {
 	}
 	public void setSpecialFeatures(String specialFeatures) {
 		this.specialFeatures = specialFeatures;
+	}
+	
+	public List<Actor> getActors() {
+		return actors;
+	}
+	public void setActors(List<Actor> actors) {
+		this.actors = actors;
 	}
 	@Override
 	public int hashCode() {

@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.skilldistillery.filmquery.entities.Actor;
@@ -27,25 +28,77 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		Film film = null;
 		String user = "student";
 		String password = "student";
-		String sql = "SELECT * FROM film WHERE id = ?";
+		String sql = "SELECT * FROM film "
+				+ "JOIN language ON film.language_id = language.id "
+				+ "JOIN film_actor ON film.id = film_actor.film_id " 
+				+ "JOIN actor ON film_actor.actor_id = actor.id "
+				+ "WHERE film.id = ?";
 
 		try (Connection conn = DriverManager.getConnection(URL, user, password);
 				PreparedStatement stmt = setUp(filmId, conn, sql);
+				ResultSet filmResults = stmt.executeQuery();) {
+
+			if (filmResults.next()) {
+				film = new Film();
+				film.setId(filmResults.getInt("film.id"));
+				film.setTitle(filmResults.getString("film.title"));
+				film.setDescription(filmResults.getString("film.description"));
+				film.setReleaseYear(filmResults.getInt("release_year"));
+				film.setLanguageId(filmResults.getInt("language_id"));
+				film.setLanguage(filmResults.getString("language.name"));
+				film.setRentalDuration(filmResults.getInt("rental_duration"));
+				film.setRentalRate(filmResults.getDouble("rental_rate"));
+				film.setLength(filmResults.getInt("length"));
+				film.setReplacementCost(filmResults.getDouble("replacement_cost"));
+				film.setRating(filmResults.getString("rating"));
+				film.setSpecialFeatures(filmResults.getString("special_features"));
+
+//				List<Integer> actorsIDs = new ArrayList<>();
+//				actorsIDs.add(filmResults.getInt("actors.id"));
+//				for (Integer element : actorsIDs) {
+//					film.getActors().add(findActorById(element));
+//				}
+			}
+
+			filmResults.close();
+
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		return film;
+	}
+
+	@Override
+	public List<Film> findFilmByKeyword(String keyword) {
+		List<Film> films = new ArrayList<>();
+		Film film = null;
+		String user = "student";
+		String password = "student";
+		String sql = "SELECT * "
+				+ "FROM film "
+				+ "JOIN language ON film.language_id = language.id "
+				+ "WHERE film.title LIKE ? OR film.description LIKE ?";
+
+		try (Connection conn = DriverManager.getConnection(URL, user, password);
+				PreparedStatement stmt = setUp(keyword, conn, sql);
 				ResultSet rs = stmt.executeQuery();) {
 
-			if (rs.next()) {
+			while (rs.next()) {
 				film = new Film();
-				film.setId(rs.getInt("id"));
-				film.setTitle(rs.getString("title"));
-				film.setDescription(rs.getString("description"));
+				film.setId(rs.getInt("film.id"));
+				film.setTitle(rs.getString("film.title"));
+				film.setDescription(rs.getString("film.description"));
 				film.setReleaseYear(rs.getInt("release_year"));
 				film.setLanguageId(rs.getInt("language_id"));
+				film.setLanguage(rs.getString("language.name"));
 				film.setRentalDuration(rs.getInt("rental_duration"));
 				film.setRentalRate(rs.getDouble("rental_rate"));
 				film.setLength(rs.getInt("length"));
 				film.setReplacementCost(rs.getDouble("replacement_cost"));
 				film.setRating(rs.getString("rating"));
 				film.setSpecialFeatures(rs.getString("special_features"));
+
+				films.add(film);
 			}
 
 			rs.close();
@@ -53,7 +106,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		} catch (SQLException e) {
 			System.err.println(e);
 		}
-		return film;
+		return films;
 	}
 
 	public Actor findActorById(int actorId) {
@@ -84,6 +137,13 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	public PreparedStatement setUp(int id, Connection conn, String sql) throws SQLException {
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setInt(1, id);
+		return stmt;
+	}
+
+	public PreparedStatement setUp(String keyword, Connection conn, String sql) throws SQLException {
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setString(1, "%" + keyword + "%");
+		stmt.setString(2, "%" + keyword + "%");
 		return stmt;
 	}
 
