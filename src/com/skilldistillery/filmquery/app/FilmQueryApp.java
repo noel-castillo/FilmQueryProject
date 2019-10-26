@@ -48,10 +48,16 @@ public class FilmQueryApp {
 				} else {
 					System.out.println(film);
 					System.out.print("Cast: ");
-					for(Actor actor : film.getActors()) {
+					for (Actor actor : film.getActors()) {
 						System.out.print(actor.toString() + " | ");
 					}
 					System.out.println();
+
+					System.out.print("categories ( ");
+					for (String category : film.getCategories()) {
+						System.out.print(category + " ");
+					}
+					System.out.print(")\n");
 				}
 				break;
 			case 2:
@@ -63,12 +69,19 @@ public class FilmQueryApp {
 				} else {
 					System.out.println("Search Results:");
 					int counter = 1;
-					for(Film element : films) {
+					for (Film element : films) {
 						System.out.println(counter++ + ". " + element);
 						System.out.print("Cast: ");
-						for(Actor actor : element.getActors()) {
+						for (Actor actor : element.getActors()) {
 							System.out.print(actor.toString() + " | ");
 						}
+						System.out.println();
+						
+						System.out.print("categories ( ");
+						for (String category : element.getCategories()) {
+							System.out.print(category + " ");
+						}
+						System.out.print(")\n");
 					}
 					System.out.println();
 				}

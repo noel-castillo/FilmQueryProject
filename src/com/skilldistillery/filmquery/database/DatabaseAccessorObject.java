@@ -53,6 +53,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setRating(filmResults.getString("rating"));
 				film.setSpecialFeatures(filmResults.getString("special_features"));
 				film.setActors(findActorsByFilmId(film.getId()));
+				film.setCategories(findCategoriesByFilmId(film.getId()));
 			}
 
 			filmResults.close();
@@ -93,6 +94,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setRating(rs.getString("rating"));
 				film.setSpecialFeatures(rs.getString("special_features"));
 				film.setActors(findActorsByFilmId(film.getId()));
+				film.setCategories(findCategoriesByFilmId(film.getId()));
 				films.add(film);
 			}
 
@@ -159,6 +161,31 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			System.err.println(e);
 		}
 		return actors;
+	}
+	@Override
+	public List<String> findCategoriesByFilmId(int filmId) {
+		List<String> categories = new ArrayList<>();
+		String user = "student";
+		String password = "student";
+		String sql = "SELECT category.name FROM category "
+				+ "JOIN film_category ON category.id = film_category.category_id "
+				+ "JOIN film ON film_category.film_id = film.id "
+				+ "WHERE film.id = ?";
+		
+		try (Connection conn = DriverManager.getConnection(URL, user, password);
+				PreparedStatement stmt = setUp(filmId, conn, sql);
+				ResultSet categoryResult = stmt.executeQuery();) {
+			
+			while (categoryResult.next()) {
+				categories.add(categoryResult.getString("name"));
+			}
+			
+		} catch (
+				
+				SQLException e) {
+			System.err.println(e);
+		}
+		return categories;
 	}
 
 	public PreparedStatement setUp(int id, Connection conn, String sql) throws SQLException {

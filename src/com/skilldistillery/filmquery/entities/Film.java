@@ -19,6 +19,7 @@ public class Film {
 	private String rating;
 	private String specialFeatures;
 	private List<Actor> actors;
+	private List<String> categories;
 	
 //	C O N S T R U C T O R 
 	
@@ -125,6 +126,13 @@ public class Film {
 	}
 	public void setActors(List<Actor> actors) {
 		this.actors = actors;
+	}
+	
+	public List<String> getCategories() {
+		return categories;
+	}
+	public void setCategories(List<String> categories) {
+		this.categories = categories;
 	}
 	@Override
 	public int hashCode() {
