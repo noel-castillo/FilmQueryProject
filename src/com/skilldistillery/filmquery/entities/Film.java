@@ -1,6 +1,7 @@
 package com.skilldistillery.filmquery.entities;
 
 import java.util.List;
+import java.util.Map;
 
 public class Film {
 	
@@ -20,6 +21,7 @@ public class Film {
 	private String specialFeatures;
 	private List<Actor> actors;
 	private List<String> categories;
+	private Map<Integer, String> copies;
 	
 //	C O N S T R U C T O R 
 	
@@ -40,10 +42,20 @@ public class Film {
 	}
 	
 //	M E T H O D S 
+	
 	@Override
 	public String toString() {
-		return title + " (" + language + ") released " + releaseYear + ", rated " + rating + " : " + description;
+		return title + " (" + language + ") released " + releaseYear + ", rated " + rating + " : " + description
+				+ "\nCast: " + actors + "\nCategories: " + categories;
 	}
+	
+	public String toStringFull() {
+		return title + " (" + language + ") Released " + releaseYear + ", Rated " + rating + " : " + description
+				+ "\nLength: " + length + " min, Replacement Cost: $" + replacementCost + ", Special Features: " + specialFeatures
+				+ "\nCast: " + actors + "\nCategories: " + categories
+				+ "\nCopies: " + copies;
+	}
+	
 	
 	public int getId() {
 		return id;
@@ -134,6 +146,14 @@ public class Film {
 	public void setCategories(List<String> categories) {
 		this.categories = categories;
 	}
+	
+	public Map<Integer, String> getCopies() {
+		return copies;
+	}
+	public void setCopies(Map<Integer, String> copies) {
+		this.copies = copies;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -6,7 +6,6 @@ import java.util.Scanner;
 
 import com.skilldistillery.filmquery.database.DatabaseAccessor;
 import com.skilldistillery.filmquery.database.DatabaseAccessorObject;
-import com.skilldistillery.filmquery.entities.Actor;
 import com.skilldistillery.filmquery.entities.Film;
 
 public class FilmQueryApp {
@@ -47,17 +46,7 @@ public class FilmQueryApp {
 					System.out.println("Film not found.");
 				} else {
 					System.out.println(film);
-					System.out.print("Cast: ");
-					for (Actor actor : film.getActors()) {
-						System.out.print(actor.toString() + " | ");
-					}
-					System.out.println();
-
-					System.out.print("categories ( ");
-					for (String category : film.getCategories()) {
-						System.out.print(category + " ");
-					}
-					System.out.print(")\n");
+					subMenu(input, film);
 				}
 				break;
 			case 2:
@@ -71,24 +60,58 @@ public class FilmQueryApp {
 					int counter = 1;
 					for (Film element : films) {
 						System.out.println(counter++ + ". " + element);
-						System.out.print("Cast: ");
-						for (Actor actor : element.getActors()) {
-							System.out.print(actor.toString() + " | ");
-						}
-						System.out.println();
-						
-						System.out.print("categories ( ");
-						for (String category : element.getCategories()) {
-							System.out.print(category + " ");
-						}
-						System.out.print(")\n");
 					}
 					System.out.println();
+					subMenu(input, films);
 				}
 				break;
 			case 0:
 				System.out.println("Goodbye");
 				System.exit(0);
+				break;
+			default:
+				System.out.println("Invalid input.");
+				break;
+			}
+		}
+	}
+
+	public void subMenu(Scanner input, Film film) {
+
+		while (true) {
+			System.out.println("1. Return to the main menu.");
+			System.out.println("2. View all film details.");
+			System.out.print(">> ");
+			int userSelection = input.nextInt();
+			switch (userSelection) {
+			case 1:
+				startUserInterface(input);
+				break;
+			case 2:
+				System.out.println(film.toStringFull());
+				break;
+			default:
+				System.out.println("Invalid input.");
+				break;
+			}
+		}
+	}
+	public void subMenu(Scanner input, List<Film> films) {
+		
+		while (true) {
+			System.out.println("1. Return to the main menu.");
+			System.out.println("2. View all film details.");
+			System.out.print(">> ");
+			int userSelection = input.nextInt();
+			switch (userSelection) {
+			case 1:
+				startUserInterface(input);
+				break;
+			case 2:
+				int counter = 1;
+				for (Film element : films) {
+					System.out.println(counter++ + ". " + element.toStringFull());
+				}
 				break;
 			default:
 				System.out.println("Invalid input.");

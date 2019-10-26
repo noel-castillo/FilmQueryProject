@@ -6,7 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.skilldistillery.filmquery.entities.Actor;
 import com.skilldistillery.filmquery.entities.Film;
@@ -54,6 +56,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setSpecialFeatures(filmResults.getString("special_features"));
 				film.setActors(findActorsByFilmId(film.getId()));
 				film.setCategories(findCategoriesByFilmId(film.getId()));
+				film.setCopies(findCopiesByFilmId(film.getId()));
 			}
 
 			filmResults.close();
@@ -95,6 +98,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				film.setSpecialFeatures(rs.getString("special_features"));
 				film.setActors(findActorsByFilmId(film.getId()));
 				film.setCategories(findCategoriesByFilmId(film.getId()));
+				film.setCopies(findCopiesByFilmId(film.getId()));
 				films.add(film);
 			}
 
@@ -186,6 +190,30 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			System.err.println(e);
 		}
 		return categories;
+	}
+	
+	@Override
+	public Map<Integer, String> findCopiesByFilmId(int filmId) {
+		Map<Integer, String> copies = new HashMap<>();
+		String user = "student";
+		String password = "student";
+		String sql = "SELECT id, media_condition FROM inventory_item "
+				+ "WHERE film_id = ?";
+		
+		try (Connection conn = DriverManager.getConnection(URL, user, password);
+				PreparedStatement stmt = setUp(filmId, conn, sql);
+				ResultSet copiesResult = stmt.executeQuery();) {
+			
+			while (copiesResult.next()) {
+				copies.put(copiesResult.getInt("id"), copiesResult.getString("media_condition"));
+			}
+			
+		} catch (
+				
+				SQLException e) {
+			System.err.println(e);
+		}
+		return copies;
 	}
 
 	public PreparedStatement setUp(int id, Connection conn, String sql) throws SQLException {
