@@ -10,6 +10,7 @@ public class Film {
 	private Integer releaseYear;
 	private int languageId;
 	private int rentalDuration;
+	private double rentalRate;
 	private int length;
 	private double replacementCost;
 	private String rating;
@@ -35,10 +36,7 @@ public class Film {
 //	M E T H O D S 
 	@Override
 	public String toString() {
-		return "Film [id=" + id + ", title=" + title + ", description=" + description + ", releaseYear=" + releaseYear
-				+ ", languageId=" + languageId + ", rentalDuration=" + rentalDuration + ", length=" + length
-				+ ", replacementCost=" + replacementCost + ", rating=" + rating + ", specialFeatures=" + specialFeatures
-				+ "]";
+		return title + " released " + releaseYear + ", rated " + rating + " : " + description;
 	}
 	
 	public int getId() {
@@ -77,6 +75,13 @@ public class Film {
 	public void setRentalDuration(int rentalDuration) {
 		this.rentalDuration = rentalDuration;
 	}
+	
+	public double getRentalRate() {
+		return rentalRate;
+	}
+	public void setRentalRate(double rentalRate) {
+		this.rentalRate = rentalRate;
+	}
 	public int getLength() {
 		return length;
 	}
@@ -113,6 +118,8 @@ public class Film {
 		result = prime * result + ((releaseYear == null) ? 0 : releaseYear.hashCode());
 		result = prime * result + rentalDuration;
 		long temp;
+		temp = Double.doubleToLongBits(rentalRate);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		temp = Double.doubleToLongBits(replacementCost);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((specialFeatures == null) ? 0 : specialFeatures.hashCode());
@@ -150,6 +157,8 @@ public class Film {
 		} else if (!releaseYear.equals(other.releaseYear))
 			return false;
 		if (rentalDuration != other.rentalDuration)
+			return false;
+		if (Double.doubleToLongBits(rentalRate) != Double.doubleToLongBits(other.rentalRate))
 			return false;
 		if (Double.doubleToLongBits(replacementCost) != Double.doubleToLongBits(other.replacementCost))
 			return false;

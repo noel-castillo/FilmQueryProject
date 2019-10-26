@@ -72,6 +72,10 @@ public class Actor {
 			return false;
 		return true;
 	}
+	@Override
+	public String toString() {
+		return firstName + " " + lastName;
+	}
 	
 	
 

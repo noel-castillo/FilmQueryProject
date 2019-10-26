@@ -27,18 +27,28 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		Film film = null;
 		String user = "student";
 		String password = "student";
-		String sql = "SELECT id FROM actor WHERE id = ?";
+		String sql = "SELECT * FROM film WHERE id = ?";
 
 		try (Connection conn = DriverManager.getConnection(URL, user, password);
-				PreparedStatement stmt = conn.prepareStatement(sql);
+				PreparedStatement stmt = setUp(filmId, conn, sql);
 				ResultSet rs = stmt.executeQuery();) {
-			stmt.setInt(1, filmId);
 
 			if (rs.next()) {
 				film = new Film();
 				film.setId(rs.getInt("id"));
-
+				film.setTitle(rs.getString("title"));
+				film.setDescription(rs.getString("description"));
+				film.setReleaseYear(rs.getInt("release_year"));
+				film.setLanguageId(rs.getInt("language_id"));
+				film.setRentalDuration(rs.getInt("rental_duration"));
+				film.setRentalRate(rs.getDouble("rental_rate"));
+				film.setLength(rs.getInt("length"));
+				film.setReplacementCost(rs.getDouble("replacement_cost"));
+				film.setRating(rs.getString("rating"));
+				film.setSpecialFeatures(rs.getString("special_features"));
 			}
+
+			rs.close();
 
 		} catch (SQLException e) {
 			System.err.println(e);
@@ -53,21 +63,28 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		String sql = "SELECT id, first_name, last_name FROM actor WHERE id = ?";
 
 		try (Connection conn = DriverManager.getConnection(URL, user, password);
-				PreparedStatement stmt = conn.prepareStatement(sql);
-				ResultSet rs = stmt.executeQuery();) {
-			stmt.setInt(1, actorId);
+				PreparedStatement stmt = setUp(actorId, conn, sql);
+				ResultSet actorResult = stmt.executeQuery();) {
 
-			if (rs.next()) {
+			if (actorResult.next()) {
 				actor = new Actor();
-				actor.setId(rs.getInt("id"));
-				actor.setFirstName(rs.getString("first_name"));
-				actor.setLastName(rs.getString("last_name"));
+				actor.setId(actorResult.getInt("id"));
+				actor.setFirstName(actorResult.getString("first_name"));
+				actor.setLastName(actorResult.getString("last_name"));
 			}
 
-		} catch (SQLException e) {
+		} catch (
+
+		SQLException e) {
 			System.err.println(e);
 		}
 		return actor;
+	}
+
+	public PreparedStatement setUp(int id, Connection conn, String sql) throws SQLException {
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, id);
+		return stmt;
 	}
 
 	public List<Actor> findActorsByFilmId(int filmId) {
