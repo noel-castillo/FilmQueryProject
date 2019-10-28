@@ -25,18 +25,20 @@ public class Film {
 	
 //	C O N S T R U C T O R 
 	
-	public Film(int id, String title, Integer releaseYear, int languageId, String language, int length, double replacementCost,
-			String specialFeatures) {
-		super();
-		this.id = id;
-		this.title = title;
-		this.releaseYear = releaseYear;
-		this.languageId = languageId;
-		this.language = language;
-		this.length = length;
-		this.replacementCost = replacementCost;
-		this.specialFeatures = specialFeatures;
-	}
+	
+	public Film(int id, String title, Integer releaseYear, int languageId, String language,
+		int length, double replacementCost) {
+	super();
+	this.id = id;
+	this.title = title;
+	this.releaseYear = releaseYear;
+	this.languageId = languageId;
+	this.language = language;
+	this.length = length;
+	this.replacementCost = replacementCost;
+}
+
+
 	public Film() {
 		super();
 	}
